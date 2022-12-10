@@ -1,7 +1,11 @@
 import socket
 import threading
 import select
+import ssl
 import sqlite3 as sl
+import cv2
+
+from api import api
 
 connections = []
 total_connections = 0
@@ -15,9 +19,25 @@ class Client(threading.Thread):
         self.id = id_num
         self.name = name
         self.signal = signal
+        self.cap = None
 
     def __str__(self):
         return str(self.id) + " " + str(self.address)
+
+    def send_response(self, response):
+        if self.signal:
+            try:
+                self.sock.send(response)
+            except ConnectionAbortedError:
+                self.kill()
+
+    def kill(self):
+        print(f"Client ID {str(self)} has disconnected")
+        self.signal = False
+        if self.cap is not None:
+            self.cap.release()
+        connections.remove(self)
+        print("■ connections:", [x.id for x in connections])
 
     def run(self):
         while self.signal:
@@ -27,23 +47,26 @@ class Client(threading.Thread):
                         [self.sock],
                         [],
                         [],
-                        60  # timeout
+                        1  # timeout
                     )
 
             except select.error:
-                print(f"Client ID {str(self)} has disconnected")
-                self.signal = False
-                connections.remove(self)
+                self.kill()
                 break
             if len(ready_to_read) > 0:
-                data = self.sock.recv(32)
-                if data.decode("utf-8", errors="ignore") == "":
-                    print(f"Client ID {str(self)} has disconnected")
-                    self.signal = False
-                    connections.remove(self)
+                data = self.sock.recv(2000).decode(errors="ignore")
+                if data == "":  # client left
+                    self.kill()
                     break
                 else:
-                    print(f"ID {str(self.id)}: {str(data.decode('utf-8', errors='ignore'))}")
+                    try:
+                        method, path, *_ = data.split()
+                        print(f"ID {str(self.id)}:", method, path)
+                        print("■ connections:", [x.id for x in connections])
+                    except ValueError:
+                        continue
+                    api(method, path, self)
+
             if len(ready_to_write) > 0:
                 pass
 
@@ -64,20 +87,19 @@ def main():
 
     # sqlite
     db_conn = sl.connect("data.db")
+    c = db_conn.cursor()
 
-    # with db_conn:
-    #     db_conn.execute("""
-    #             CREATE TABLE USER (
-    #                 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    #                 name TEXT
-    #             );
-    #         """)
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind((host, port))
-    sock.listen(5)
+    # server = ssl.wrap_socket(
+    #     server, server_side=True, keyfile="path/to/keyfile", certfile="path/to/certfile"
+    # )
 
-    newConnectionsThread = threading.Thread(target=connections_daemon, args=(sock,))
+    server.bind((host, port))
+    server.listen(5)
+
+    newConnectionsThread = threading.Thread(target=connections_daemon, args=(server,))
     newConnectionsThread.start()
 
 
