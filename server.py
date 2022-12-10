@@ -4,6 +4,7 @@ import select
 import ssl
 import sqlite3 as sl
 import cv2
+import urllib.parse
 
 from api import api
 
@@ -61,11 +62,15 @@ class Client(threading.Thread):
                 else:
                     try:
                         method, path, *_ = data.split()
-                        print(f"ID {str(self.id)}:", method, path)
+                        body = data.partition("\r\n\r\n")[2].split("&")
+                        body = {urllib.parse.unquote_plus(x.partition("=")[0]):
+                                    urllib.parse.unquote_plus(x.partition("=")[2]) for x in body}
+                        print(body)
+                        print(f"ID {str(self.id)}:", data)
                         print("■ connections:", [x.id for x in connections])
                     except ValueError:
                         continue
-                    api(method, path, self)
+                    api(self, method, path, body)
 
             if len(ready_to_write) > 0:
                 pass
@@ -86,8 +91,18 @@ def main():
     port = 12345
 
     # sqlite
-    db_conn = sl.connect("data.db")
+
+    db_conn = sl.connect("data.sqlite")
     c = db_conn.cursor()
+    c = c.execute("""
+        CREATE TABLE IF NOT EXISTS comments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            post TEXT NOT NULL ,
+            user TEXT NOT NULL ,
+            comment TEXT NOT NULL ,
+            time TEXT NOT NULL 
+        );
+    """)
 
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

@@ -1,5 +1,7 @@
+<!DOCTYPE html>
 <html lang="">
 <head>
+    <meta charset="UTF-8">
     <link rel="icon" href="data:,">
     <style>
         img {
@@ -7,13 +9,53 @@
             Max-width: 100%;
         }
     </style>
+
     <title>Video 2</title>
 </head>
 <body>
-<h1>Free Design Resources</h1>
+<h1>Free Design Resources <a href="index.html">home</a></h1>
 <h2>Video 2: Golden Liquid</h2>
 <div>
     <img id="player" src="/streaming/video2">
+</div>
+<button onclick="document.getElementById('player').src='/streaming/video2' + '?' + new Date().getMilliseconds()">
+    Replay
+</button>
+
+<div>
+    <h2>Comments</h2>
+    <div>
+        <ul style="list-style-type:square">
+            ${comments}
+        </ul>
+    </div>
+    <form action="/comment/video2" method="post">
+        <table>
+            <tbody>
+            <tr>
+                <td>
+                    Name:
+                </td>
+                <td>
+                    <label>
+                        <input required type="text" name="user" size="15">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Comment:
+                </td>
+                <td>
+                    <label>
+                        <textarea required name="comment"></textarea>
+                    </label>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <input type="submit" name="submit" value="Submit"/>
+    </form>
 </div>
 </body>
 </html>
