@@ -184,6 +184,15 @@ def api(client, method, path, header, body):
                 response = [Status(200), Content_type("html"), Content_length(content), "", content, ""]
                 response_text = "\r\n".join(response).encode()
                 client.send_response(response_text)
+            elif path.startswith("/assets/thumbnail"):
+                f = open(path[1:], "rb")
+                content = f.read()
+                f.close()
+                response = [Status(200), Content_type("png"), Content_length(content), "", ""]
+                response_text = "\r\n".join(response).encode()
+                response_text += content
+                response_text += b"\r\n"
+                client.send_response(response_text)
             elif path.startswith("/streaming/video"):  # open video streaming
                 video_name = path.split("/")[2].partition("?")[0]
                 print(video_name)
