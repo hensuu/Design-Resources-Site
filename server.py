@@ -91,7 +91,7 @@ def connections_daemon(main_socket):
 
 def main():
     host = "0.0.0.0"
-    port = 12543
+    port = 12345
 
     # sqlite
     db_conn = sl.connect("data.sqlite")
