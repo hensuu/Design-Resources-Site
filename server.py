@@ -1,9 +1,7 @@
 import socket
 import threading
 import select
-import ssl
 import sqlite3 as sl
-import cv2
 import urllib.parse
 
 from api import api

@@ -1,6 +1,3 @@
-import sys
-import pyaudio
-import wave
 import sqlite3 as sl
 import cv2
 from time import sleep
