@@ -21,6 +21,8 @@ class Client(threading.Thread):
         self.name = name
         self.signal = signal
         self.cap = None
+        self.wav = None
+        self.bytes_count = 0
 
     def __str__(self):
         return str(self.id) + " " + str(self.address)
@@ -37,6 +39,7 @@ class Client(threading.Thread):
         self.signal = False
         if self.cap is not None:
             self.cap.release()
+
         connections.remove(self)
         print("■ connections:", [x.id for x in connections])
 
@@ -56,21 +59,23 @@ class Client(threading.Thread):
                 break
             if len(ready_to_read) > 0:
                 data = self.sock.recv(2000).decode(errors="ignore")
+                print(f"ID {str(self.id)}:", data)
                 if data == "":  # client left
                     self.kill()
                     break
                 else:
                     try:
                         method, path, *_ = data.split()
+                        header = data.partition("\r\n\r\n")[0].split("\r\n")[1:]
+                        header = {x.split(": ", 1)[0]: x.split(": ", 1)[1] for x in header}
                         body = data.partition("\r\n\r\n")[2].split("&")
                         body = {urllib.parse.unquote_plus(x.partition("=")[0]):
                                     urllib.parse.unquote_plus(x.partition("=")[2]) for x in body}
                         print(body)
-                        print(f"ID {str(self.id)}:", data)
                         print("■ connections:", [x.id for x in connections])
                     except ValueError:
                         continue
-                    api(self, method, path, body)
+                    api(self, method, path, header, body)
 
             if len(ready_to_write) > 0:
                 pass
@@ -88,13 +93,12 @@ def connections_daemon(main_socket):
 
 def main():
     host = "0.0.0.0"
-    port = 12345
+    port = 12543
 
     # sqlite
-
     db_conn = sl.connect("data.sqlite")
     c = db_conn.cursor()
-    c = c.execute("""
+    c.execute("""
         CREATE TABLE IF NOT EXISTS comments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             post TEXT NOT NULL ,
@@ -103,6 +107,16 @@ def main():
             time TEXT NOT NULL 
         );
     """)
+    c.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL ,
+                password TEXT NOT NULL 
+            );
+        """)
+
+    db_conn.commit()
+    db_conn.close()
 
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

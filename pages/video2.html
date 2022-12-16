@@ -14,6 +14,7 @@
 </head>
 <body>
 <h1>Free Design Resources <a href="index.html">home</a></h1>
+<h3>${membership}</h3>
 <h2>Video 2: Golden Liquid</h2>
 <div>
     <img id="player" src="/streaming/video2">
@@ -25,37 +26,11 @@
 <div>
     <h2>Comments</h2>
     <div>
-        <ul style="list-style-type:square">
-            ${comments}
-        </ul>
+        ${comment_list}
     </div>
-    <form action="/comment/video2" method="post">
-        <table>
-            <tbody>
-            <tr>
-                <td>
-                    Name:
-                </td>
-                <td>
-                    <label>
-                        <input required type="text" name="user" size="15">
-                    </label>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Comment:
-                </td>
-                <td>
-                    <label>
-                        <textarea required name="comment"></textarea>
-                    </label>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <input type="submit" name="submit" value="Submit"/>
-    </form>
+    <div>
+        ${comment_form}
+    </div>
 </div>
 </body>
 </html>

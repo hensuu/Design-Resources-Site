@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<h1>Free Design Resources <a href="index.html">home</a></h1>
+<h2>Login</h2>
+<form action="/login" method="post">
+    <table>
+        <tbody>
+        <tr>
+            <td>
+                Username:
+            </td>
+            <td>
+                <label>
+                    <input required type="text" name="username" size="15">
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Password:
+            </td>
+            <td>
+                <label>
+                    <input required type="password" name="password" size="15">
+                </label>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <input type="submit" name="submit" value="Login"/>
+</form>
+<h2>or you can Register</h2>
+<h3>Don't use your real password! The connection is unsafe</h3>
+<form action="/register" method="post">
+    <table>
+        <tbody>
+        <tr>
+            <td>
+                Username:
+            </td>
+            <td>
+                <label>
+                    <input required type="text" name="username" size="15">
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Password:
+            </td>
+            <td>
+                <label>
+                    <input required type="password" name="password" size="15">
+                </label>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <input type="submit" name="submit" value="Register"/>
+</form>
+</body>
+</html>
