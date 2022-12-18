@@ -29,7 +29,7 @@ class Client(threading.Thread):
         if self.signal:
             try:
                 self.sock.send(response)
-            except ConnectionAbortedError:
+            except (ConnectionAbortedError, BrokenPipeError):
                 self.kill()
 
     def kill(self):
@@ -57,7 +57,7 @@ class Client(threading.Thread):
                 break
             if len(ready_to_read) > 0:
                 data = self.sock.recv(2000).decode(errors="ignore")
-                print(f"ID {str(self.id)}:", data)
+                # print(f"ID {str(self.id)}:", data)
                 if data == "":  # client left
                     self.kill()
                     break
@@ -69,7 +69,7 @@ class Client(threading.Thread):
                         body = data.partition("\r\n\r\n")[2].split("&")
                         body = {urllib.parse.unquote_plus(x.partition("=")[0]):
                                     urllib.parse.unquote_plus(x.partition("=")[2]) for x in body}
-                        print(body)
+                        print(f"ID {str(self.id)}:", method, path)
                         print("■ connections:", [x.id for x in connections])
                     except ValueError:
                         continue

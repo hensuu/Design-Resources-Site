@@ -194,7 +194,7 @@ def api(client, method, path, header, body):
             client.send_response(response_text)
         elif path.startswith("/streaming/video"):  # open video streaming
             video_name = path.split("/")[2].partition("?")[0]
-            print(video_name)
+            # print(video_name)
             if client.cap is None or not client.cap.isOpened():
                 client.cap = cv2.VideoCapture(f"./assets/{video_name}.mp4")
             if client.cap.isOpened():
@@ -226,7 +226,7 @@ def api(client, method, path, header, body):
             page_name = path.split("/")[2].partition("?")[0]
             add_comment(page_name, body)
             response = [Status(303), Location(page_name), "", ""]  # redirect to video page
-            print(response)
+            # print(response)
             response_text = "\r\n".join(response).encode()
             client.send_response(response_text)
         elif path.startswith("/login"):
@@ -248,7 +248,7 @@ def api(client, method, path, header, body):
         elif path.startswith("/register"):
             ret = register(body)
             if ret:
-                print("register success")
+                # print("register success")
                 response = [Status(303), Location(""), Set_cookie({"token": f"{body['username']}", "path": "/"}),
                             "", ""]
             else:
@@ -264,7 +264,7 @@ def api(client, method, path, header, body):
 
         elif path.startswith("/logout"):
             page_name = path.split("/")[2].partition("?")[0]
-            print(page_name)
+            # print(page_name)
             response = [Status(303), Location(f"{page_name}"),
                         Set_cookie({"token": "", "path": "/", "expires": "Thu, 01 Jan 1970 00:00:00 GMT"}), "", ""]
             response_text = "\r\n".join(response).encode()
