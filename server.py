@@ -126,6 +126,8 @@ def main():
     server.bind((host, port))
     server.listen(5)
 
+    print(f"Server started at {host}:{port}")
+
     newConnectionsThread = threading.Thread(target=connections_daemon, args=(server,))
     newConnectionsThread.start()
 
