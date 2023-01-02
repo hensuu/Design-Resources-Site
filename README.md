@@ -1,4 +1,9 @@
-# 免費影片素材網 Free Design Resources Site
+# 影片素材網 Design Resources Site
+
+> 一個自訂API、瀏覽器面向的web server
+
+## 原理
+收到瀏覽器發出的HTTP request後，根據自訂的API來抓取資料庫、渲染前端頁面和讀取串流影片，並回傳瀏覽器。
 
 ## 功能
 
