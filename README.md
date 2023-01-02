@@ -1,16 +1,4 @@
-# Project Phase 2 README
-
-## 組員
-
-B09902069 資工三 李昆昱
-
-B09902045 資工三 林昌泓
-
-## 主題
-
-免費影片素材網
-
-Free Design Resources Site
+# 免費影片素材網 Free Design Resources Site
 
 ## 功能
 
@@ -29,7 +17,7 @@ Free Design Resources Site
 ## 執行方式
 
 1. 執行 server.py （`python server.py`）
-2. 使用瀏覽器（推薦使用 Chrome or Edge）瀏覽 http://localhost:12345，便可開始瀏覽。
+2. 使用瀏覽器（推薦使用 Chrome or Edge）瀏覽 http://localhost:12345 ，便可開始瀏覽。
 
 ## 主要功能之實作方式
 
