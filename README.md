@@ -42,11 +42,12 @@
     - 使用 HTTP 中 Content-type: multipart/x-mixed-replace 的機制來實作
     - 透過 OpenCV 套件來實時讀取影片中的影像幀
     - 將影像幀透過 HTTP 傳送至 Browser，使用新的影像幀來替換舊的幀，達成影片串流的功能
-    - 按下 Replay 按鈕，便重新由第一幀開始讀取及傳送。
+    - 按下 Replay 按鈕，便重新由第一幀開始讀取及傳送
 
 ## DEMO影片
 
-請見 DEMO.mp4
+https://user-images.githubusercontent.com/67720182/210233279-1b9d419c-7940-4df5-bfcb-39db7789e981.mp4
+https://youtu.be/75y9cxLoAA4
 
 ## 素材來源
 
